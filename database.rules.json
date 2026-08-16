@@ -1,0 +1,62 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "app_data": {
+      "backups": {
+        ".read": "auth != null && (root.child('users').child(auth.uid).child('role').val() == 'admin' || auth.token.email == 'laouidabdelhamid9@gmail.com')",
+        ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() == 'admin' || auth.token.email == 'laouidabdelhamid9@gmail.com')",
+        "$bid": {
+          ".validate": "newData.hasChildren(['payload', 'createdAt'])",
+          "payload": { ".validate": "newData.isString()" },
+          "createdAt": { ".validate": "newData.isString()" }
+        }
+      },
+
+      "presence": {
+        ".read": "auth != null && (root.child('users').child(auth.uid).child('role').val() == 'admin' || auth.token.email == 'laouidabdelhamid9@gmail.com')",
+        ".write": "auth != null",
+        "$uid": {
+          ".validate": "newData.hasChildren(['online', 'lastSeen'])"
+        }
+      },
+
+      "$collection": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        "$id": {
+          ".validate": "newData.hasChild('id')"
+        }
+      }
+    },
+
+    "sync_rooms": {
+      "ops": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        "$opid": {
+          ".validate": "newData.hasChildren(['kind', 'refId', 'payload'])"
+        }
+      }
+    },
+
+    "users": {
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth != null && (auth.uid == $uid || (root.child('users').child(auth.uid).child('role').val() == 'admin' || auth.token.email == 'laouidabdelhamid9@gmail.com'))",
+        "role": {
+          ".validate": "newData.val() == 'admin' ? (root.child('users').child(auth.uid).child('role').val() == 'admin' || auth.token.email == 'laouidabdelhamid9@gmail.com') : true"
+        }
+      }
+    },
+
+    "usernames": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$key": {
+        ".validate": "newData.isString()"
+      }
+    }
+  }
+}
